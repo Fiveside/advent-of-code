@@ -6,3 +6,4 @@ authors = ["Fiveside"]
 [dependencies]
 structopt = "0.1"
 structopt-derive = "0.1"
+itertools = "0.6"
