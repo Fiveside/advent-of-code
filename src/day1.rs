@@ -1,6 +1,5 @@
 use itertools;
 use itertools::Itertools;
-use std::str::FromStr;
 
 pub fn day1(input: &str) {
     println!("part 1 solution: {}", part1(input));
@@ -49,9 +48,10 @@ For example:
 
 */
 fn part1(input: &str) -> u64 {
-    let mut input: Vec<_> = input.chars()
-        .map(|x| u64::from_str(&x.to_string()).unwrap())
+    let mut input: Vec<_> = (0..input.len())
+        .map(|idx| u64::from_str_radix(&input[idx..idx+1], 10).unwrap())
         .collect();
+
     let first = input[0];
     input.push(first);
 
