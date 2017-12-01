@@ -1,4 +1,32 @@
+use itertools;
+use itertools::Itertools;
+use std::str::FromStr;
+
+pub fn day1(input: &str) {
+    println!("part 1 solution: {}", part1(input));
+    if input.len() % 2 == 0 {
+        println!("part 2 solution: {}", part2(input));
+    }
+}
+
 /*
+--- Day 1: Inverse Captcha ---
+
+The night before Christmas, one of Santa's Elves calls you in a panic. "The printer's broken! We
+can't print the Naughty or Nice List!" By the time you make it to sub-basement 17, there are only a
+few minutes until midnight. "We have a big problem," she says; "there must be almost fifty bugs in
+this system, but nothing else can print The List. Stand in this square, quick! There's no time to
+explain; if you can convince them to pay you in stars, you'll be able to--" She pulls a lever and
+the world goes blurry.
+
+When your eyes can focus again, everything seems a lot more pixelated than before. She must have
+sent you inside the computer! You check the system clock: 25 milliseconds until midnight. With that
+much time, you should be able to collect all fifty stars by December 25th.
+
+Collect stars by solving puzzles. Two puzzles will be made available on each day millisecond in the
+advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one
+star. Good luck!
+
 You're standing in a room with "digitization quarantine" written in LEDs along one wall. The only
 door is locked, but it includes a small interface. "Restricted Area - Strictly No Digitized Users
 Allowed."
@@ -20,17 +48,6 @@ For example:
 * 91212129 produces 9 because the only digit that matches the next one is the last digit, 9.
 
 */
-use itertools;
-use itertools::Itertools;
-use std::str::FromStr;
-
-pub fn day1(input: &str) {
-    println!("part 1 solution: {}", part1(input));
-    if input.len() % 2 == 0 {
-        println!("part 2 solution: {}", part2(input));
-    }
-}
-
 fn part1(input: &str) -> u64 {
     let mut input: Vec<_> = input.chars()
         .map(|x| u64::from_str(&x.to_string()).unwrap())
@@ -43,6 +60,25 @@ fn part1(input: &str) -> u64 {
         .filter_map(|(x, y)| if x == y {Some(x)} else {None})
         .sum()
 }
+
+/*
+--- Part Two ---
+
+You notice a progress bar that jumps to 50% completion. Apparently, the door isn't yet satisfied,
+but it did emit a star as encouragement. The instructions change:
+
+Now, instead of considering the next digit, it wants you to consider the digit halfway around the
+circular list. That is, if your list contains 10 items, only include a digit in your sum if the
+digit 10/2 = 5 steps forward matches it. Fortunately, your list has an even number of elements.
+
+For example:
+
+* 1212 produces 6: the list contains 4 items, and all four digits match the digit 2 items ahead.
+* 1221 produces 0, because every comparison is between a 1 and a 2.
+* 123425 produces 4, because both 2s match each other, but no other digit has a match.
+* 123123 produces 12.
+* 12131415 produces 4.
+*/
 
 fn part2(input: &str) -> u64 {
     let nums: Vec<_> = (0..input.len())
