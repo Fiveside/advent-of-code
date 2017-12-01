@@ -20,14 +20,18 @@ For example:
 * 91212129 produces 9 because the only digit that matches the next one is the last digit, 9.
 
 */
+use itertools;
 use itertools::Itertools;
 use std::str::FromStr;
 
 pub fn day1(input: &str) {
-    println!("captcha: {}, solution: {}", input, captcha(input));
+    println!("part 1 solution: {}", part1(input));
+    if input.len() % 2 == 0 {
+        println!("part 2 solution: {}", part2(input));
+    }
 }
 
-fn captcha(input: &str) -> u64 {
+fn part1(input: &str) -> u64 {
     let mut input: Vec<_> = input.chars()
         .map(|x| u64::from_str(&x.to_string()).unwrap())
         .collect();
@@ -40,22 +44,51 @@ fn captcha(input: &str) -> u64 {
         .sum()
 }
 
+fn part2(input: &str) -> u64 {
+    let nums: Vec<_> = (0..input.len())
+        .map(|start| u64::from_str_radix(&input[start..start+1], 10).unwrap())
+        .collect();
+
+    let half = nums.len() / 2;
+
+    itertools::zip(&nums[..half], &nums[half..])
+        .filter_map(|(&x, &y)| if x == y {Some(x*2)} else {None})
+        .sum()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_day1_computes_triple_adjacent() {
-        assert_eq!(captcha("0111"), 2);
+    fn test_day1_part1_computes_triple_adjacent() {
+        assert_eq!(part1("0111"), 2);
     }
 
     #[test]
-    fn test_day1_wraps() {
-        assert_eq!(captcha("11"), 2);
+    fn test_day1_part1_wraps() {
+        assert_eq!(part1("11"), 2);
     }
 
     #[test]
-    fn test_day1_skips_non_equal() {
-        assert_eq!(captcha("123"), 0);
+    fn test_day1_part1_skips_non_equal() {
+        assert_eq!(part1("123"), 0);
+    }
+
+    #[test]
+    fn test_day1_part2_computes_skip2() {
+        assert_eq!(part2("1212"), 6);
+    }
+
+    #[test]
+    fn test_day1_part2_skips_no_match() {
+        assert_eq!(part2("1221"), 0);
+    }
+
+    #[test]
+    fn test_day1_part2_extras() {
+        assert_eq!(part2("123425"), 4);
+        assert_eq!(part2("123123"), 12);
+        assert_eq!(part2("12131415"), 4);
     }
 }
