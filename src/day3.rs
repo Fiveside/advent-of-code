@@ -1,44 +1,90 @@
-use std::f64::consts::PI;
-
 pub fn day3(coord: u64) {
     println!("received coord {}", coord);
     println!("part 1 solution: {}", part1(coord));
 }
 
-fn part1(coord: u64) -> f64 {
-    // Treat the grid like a unit circle.  To find the position of the coordinate, find the
-    // x and y, and add them together to get the travel distance
-    // each ring has its maximal number follow this pattern:
-    // 1^2, 3^2, 5^2, 7^2...
+/*
+--- Day 3: Spiral Memory ---
 
-    // ring number is from 0
+You come across an experimental new kind of memory stored on an infinite two-dimensional grid.
+
+Each square on the grid is allocated in a spiral pattern starting at a location marked 1 and then
+counting up while spiraling outward. For example, the first few squares are allocated like this:
+
+17  16  15  14  13
+18   5   4   3  12
+19   6   1   2  11
+20   7   8   9  10
+21  22  23---> ...
+
+While this is very space-efficient (no squares are skipped), requested data must be carried back to
+square 1 (the location of the only access port for this memory system) by programs that can only
+move up, down, left, or right. They always take the shortest path: the Manhattan Distance between
+the location of the data and square 1.
+
+For example:
+
+    Data from square 1 is carried 0 steps, since it's at the access port.
+    Data from square 12 is carried 3 steps, such as: down, left, left.
+    Data from square 23 is carried only 2 steps: up twice.
+    Data from square 1024 must be carried 31 steps.
+
+How many steps are required to carry the data from the square identified in your puzzle input all
+the way to the access port?
+*/
+
+fn part1(coord: u64) -> u64 {
     let ring_number = (((coord as f64).sqrt() - 1f64) / 2f64).ceil();
     let ring_max = (ring_number * 2f64 + 1f64).powi(2);
     let ring_min = ((ring_number - 1f64) * 2f64 + 1f64).powi(2);
-    let ring_count = ring_max - ring_min;
+    let cardinals = [
+        0f64.max(ring_number - 1f64) + ring_min + 1f64,
+        ring_number * 3f64 + ring_min,
+        ring_number * 5f64 + ring_min,
+        ring_number * 7f64 + ring_min,
+    ];
+    cardinals.into_iter()
+        .map(|x| (coord as f64 - x).abs() as u64)
+        .min().unwrap() + ring_number as u64
+}
 
-    // The spiral origin is at the bottom right, not the polar origin
-    let polar_unit = 1f64 / ring_count * 2f64 * PI;
-    let polar_origin = (ring_number - 1f64) * polar_unit * -1f64;
-    let coordpos = coord as f64 - ring_min;
-    let polarcoord = (coordpos * 2f64 * PI / ring_count) + polar_origin;
+/*
+--- Part Two ---
 
-    // Nromalze
-    let first_quad = (polarcoord % 90f64).abs();
-    let polar = if first_quad > (PI / 4f64) {
-        (PI / 2f64) - first_quad
-    } else {
-        first_quad
-    };
+As a stress test on the system, the programs here clear the grid and then store the value 1 in
+square 1. Then, in the same allocation order as shown above, they store the sum of the values in
+all adjacent squares, including diagonals.
 
-    // x is also (base-1)/2 if you follow that pattern above
-    let x = ring_number;
-    let y = (polar.tan() * (1f64 / x)) / 1f64;
+So, the first few squares' values are chosen as follows:
 
-    println!("coordpos: {}, ring_min {}, ring_max {}", coordpos, ring_min, ring_max);
-    println!("polar_unit {}, polar_origin {}, polar {}", polar_unit, polar_origin, polar);
-    println!("polar rad: {}, deg: {}", polarcoord, polarcoord * 180f64/PI);
-    println!("x {}, y {}", x, y);
+    Square 1 starts with the value 1.
+    Square 2 has only one adjacent filled square (with value 1), so it also stores 1.
+    Square 3 has both of the above squares as neighbors and stores the sum of their values, 2.
+    Square 4 has all three of the aforementioned squares as neighbors and stores the sum of their values, 4.
+    Square 5 only has the first and fourth squares as neighbors, so it gets the value 5.
 
-    x.abs() +  y.abs().round()
+Once a square is written, its value does not change. Therefore, the first few squares would receive
+the following values:
+
+147  142  133  122   59
+304    5    4    2   57
+330   10    1    1   54
+351   11   23   25   26
+362  747  806--->   ...
+
+What is the first value written that is larger than your puzzle input?
+
+*/
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_day2_part1() {
+        assert_eq!(part1_asdfasdf(12), 3);
+        assert_eq!(part1_asdfasdf(23), 2);
+        assert_eq!(part1_asdfasdf(1024), 31);
+    }
+
 }
