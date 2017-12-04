@@ -1,3 +1,5 @@
+#![feature(attr_literals)]
+
 extern crate itertools;
 extern crate structopt;
 
@@ -9,6 +11,7 @@ use structopt::StructOpt;
 mod utils;
 mod day1;
 mod day2;
+mod day3;
 
 #[derive(StructOpt, Debug)]
 #[structopt]
@@ -22,6 +25,11 @@ enum Opt {
     Day2 {
         #[structopt]
         input_file: String,
+    },
+    #[structopt(name = "3", help = "Run day 3 solution")]
+    Day3 {
+        #[structopt]
+        coordinate: String,
     }
 }
 
@@ -30,5 +38,6 @@ fn main() {
     match opt {
         Opt::Day1{captcha: x} => day1::day1(&x),
         Opt::Day2{input_file: x} => day2::day2(&x),
+        Opt::Day3{coordinate: x} => day3::day3(u64::from_str_radix(&x, 10).unwrap()),
     };
 }
