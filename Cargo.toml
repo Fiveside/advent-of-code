@@ -1,0 +1,12 @@
+[package]
+name = "advent-of-code-2018"
+version = "0.1.0"
+authors = ["Erich Healy <ErichRHealy@gmail.com>"]
+edition = "2018"
+
+[lib]
+bench = false
+
+[dependencies]
+aoc-runner = "*"
+aoc-runner-derive = "*"
