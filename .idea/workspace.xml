@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9f48812e-ec4a-4a4b-aab7-1d4b274e6cd8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/day1.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/day1.rs" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/day1.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
+              <folding>
+                <element signature="e#335#336#0" expanded="true" />
+                <element signature="e#366#367#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/input/2018/day1.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="2" lean-forward="true" selection-start-column="2" selection-end-column="2" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/day1.rs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1870" />
+    <option name="y" value="-9" />
+    <option name="width" value="1310" />
+    <option name="height" value="528" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="advent-of-code" type="b2602c69:ProjectViewProjectNode" />
+              <item name="advent-of-code" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="advent-of-code" type="b2602c69:ProjectViewProjectNode" />
+              <item name="advent-of-code" type="462c0819:PsiDirectoryNode" />
+              <item name="input" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="advent-of-code" type="b2602c69:ProjectViewProjectNode" />
+              <item name="advent-of-code" type="462c0819:PsiDirectoryNode" />
+              <item name="input" type="462c0819:PsiDirectoryNode" />
+              <item name="2018" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="advent-of-code" type="b2602c69:ProjectViewProjectNode" />
+              <item name="advent-of-code" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543893349262" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Cargo Command.Test day1::test (1)">
+    <configuration name="Test day1::test (1)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package advent-of-code-2018 --lib day1::test" />
+      <option name="allFeatures" value="true" />
+      <option name="nocapture" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test day1::test (3)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package advent-of-code-2018 --lib day1::test" />
+      <option name="allFeatures" value="true" />
+      <option name="nocapture" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test day1::test (4)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package advent-of-code-2018 --lib day1::test" />
+      <option name="allFeatures" value="true" />
+      <option name="nocapture" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test day1::test (5)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package advent-of-code-2018 --lib day1::test" />
+      <option name="allFeatures" value="true" />
+      <option name="nocapture" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test day1::test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package advent-of-code-2018 --lib day1::test" />
+      <option name="allFeatures" value="true" />
+      <option name="nocapture" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo Command.Test day1::test (1)" />
+        <item itemvalue="Cargo Command.Test day1::test" />
+        <item itemvalue="Cargo Command.Test day1::test (5)" />
+        <item itemvalue="Cargo Command.Test day1::test (4)" />
+        <item itemvalue="Cargo Command.Test day1::test (3)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9f48812e-ec4a-4a4b-aab7-1d4b274e6cd8" name="Default Changelist" comment="" />
+      <created>1543889225254</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1543889225254</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Test_day1__test__part2_sample - 2018.12.03 at 18h 49m 35s.xml">
+      <configuration name="Test day1::test::part2_sample" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test__part2_sample_(1) - 2018.12.03 at 18h 50m 31s.xml">
+      <configuration name="Test day1::test::part2_sample (1)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test__part2_sample_(3) - 2018.12.03 at 18h 51m 25s.xml">
+      <configuration name="Test day1::test::part2_sample (3)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test - 2018.12.03 at 18h 51m 39s.xml">
+      <configuration name="Test day1::test" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test_(1) - 2018.12.03 at 18h 52m 50s.xml">
+      <configuration name="Test day1::test (1)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test_(2) - 2018.12.03 at 18h 53m 52s.xml">
+      <configuration name="Test day1::test (2)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test_(3) - 2018.12.03 at 18h 55m 09s.xml">
+      <configuration name="Test day1::test (3)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test_(4) - 2018.12.03 at 18h 55m 51s.xml">
+      <configuration name="Test day1::test (4)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test_(5) - 2018.12.03 at 19h 04m 53s.xml">
+      <configuration name="Test day1::test (5)" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+    <history-entry file="Test_day1__test - 2018.12.03 at 19h 12m 20s.xml">
+      <configuration name="Test day1::test" configurationId="CargoCommandRunConfiguration" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1912" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="UI Designer" />
+      <window_info id="Capture Tool" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.3290461" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3290461" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Palette" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Maven" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Cargo" />
+      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/input/2018/day1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="2" lean-forward="true" selection-start-column="2" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/day1.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+          <folding>
+            <element signature="e#335#336#0" expanded="true" />
+            <element signature="e#366#367#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
