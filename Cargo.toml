@@ -1,8 +1,8 @@
 [package]
-name = "advent-of-code-2018"
-version = "0.1.0"
+name = "advent-of-code"
+version = "0.1.1"
 authors = ["Erich Healy <ErichRHealy@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 bench = false
