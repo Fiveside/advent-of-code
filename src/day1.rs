@@ -1,51 +1,22 @@
 use aoc_runner_derive::aoc;
-use std::collections::hash_set::HashSet;
+use aoc_runner_derive::aoc_generator;
+use itertools::Itertools;
 
-fn frequencies<'a>(input: &'a str) -> impl Iterator<Item = i32> + 'a + Clone {
+#[aoc_generator(day1)]
+fn input_generation(input: &str) -> Vec<u32> {
     input
-        .split_whitespace()
-        .map(|x| x.trim().parse::<i32>().unwrap())
+        .split("\n")
+        .map(|s| s.trim())
+        .filter(|s| s.len() > 0)
+        .map(|s| s.parse::<u32>().unwrap())
+        .collect()
 }
 
-#[aoc(day1, part1, Chars)]
-fn part1(input: &str) -> i32 {
-    frequencies(input).sum()
-}
-
-#[aoc(day1, part2, Chars)]
-fn part2(input: &str) -> i32 {
-    let mut seen = HashSet::new();
-    let mut counter: i32 = 0;
-    ::std::iter::once(0)
-        .chain(frequencies(input).cycle())
-        .filter_map(|x| {
-            counter += x;
-            if !seen.insert(counter) {
-                Some(counter)
-            } else {
-                None
-            }
-        })
-        .next()
-        .unwrap()
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn part1_sample1() {
-        assert_eq!(part1("+1 +1 +1"), 3);
-        assert_eq!(part1("+1 +1 -2"), 0);
-        assert_eq!(part1("-1 -2 -3"), -6);
-    }
-
-    #[test]
-    fn part2_sample() {
-        assert_eq!(part2("+1 -1"), 0);
-        assert_eq!(part2("+3 +3 +4 -2 -4"), 10);
-        assert_eq!(part2("-6 +3 +8 +5 -6"), 5);
-        assert_eq!(part2("+7 +7 -2 -7 -4"), 14);
-    }
+#[aoc(day1, part1)]
+fn part1(input: &Vec<u32>) -> u32 {
+    input
+        .iter()
+        .tuple_windows()
+        .map(|(l, r)| if r > l { 1 } else { 0 })
+        .sum()
 }
