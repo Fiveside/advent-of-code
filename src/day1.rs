@@ -20,3 +20,14 @@ fn part1(input: &Vec<u32>) -> u32 {
         .map(|(l, r)| if r > l { 1 } else { 0 })
         .sum()
 }
+
+#[aoc(day1, part2)]
+fn part2(input: &Vec<u32>) -> u32 {
+    input
+        .iter()
+        .tuple_windows()
+        .map(|(x, y, z)| x + y + z)
+        .tuple_windows()
+        .map(|(l, r)| if r > l { 1 } else { 0 })
+        .sum()
+}
