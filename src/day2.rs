@@ -23,9 +23,14 @@ impl Action {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 struct Position {
     forward: u32,
+
+    // in part 1, this variable tracks depth.  In part 2, it tracks aim.
+    aim: i64,
+
+    // This is not used by part 1, aim tracks depth there.
     depth: i64,
 }
 
@@ -33,19 +38,28 @@ impl Position {
     fn new() -> Self {
         Position {
             forward: 0,
+            aim: 0,
             depth: 0,
         }
     }
 
     fn move_position(&mut self, act: &Action) {
         match act {
-            &Action::Forward(x) => self.forward += x,
-            &Action::Down(x) => self.depth += x as i64,
-            &Action::Up(x) => self.depth -= x as i64,
+            &Action::Forward(x) => {
+                self.forward += x;
+                self.depth += (x as i64) * self.aim
+            }
+            &Action::Down(x) => self.aim += x as i64,
+            &Action::Up(x) => self.aim -= x as i64,
         }
     }
 
     fn answer_part1(self) -> i64 {
+        // aim is what we thought depth was in part 1
+        (self.forward as i64) * self.aim
+    }
+
+    fn answer_part2(self) -> i64 {
         (self.forward as i64) * self.depth
     }
 }
@@ -69,6 +83,17 @@ fn part1(input: &[Action]) -> i64 {
     }
 
     pos.answer_part1()
+}
+
+#[aoc(day2, part2)]
+fn part2(input: &[Action]) -> i64 {
+    let mut pos = Position::new();
+
+    for action in input {
+        pos.move_position(action);
+    }
+
+    pos.answer_part2()
 }
 
 #[cfg(test)]
@@ -99,5 +124,10 @@ forward 2";
     #[test]
     fn test_part1() {
         assert_eq!(part1(&INPUT_ACTIONS), 150);
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(&INPUT_ACTIONS), 900);
     }
 }
