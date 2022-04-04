@@ -68,6 +68,87 @@ fn part1(input: &[Vec<u8>]) -> i64 {
     return g_num * e_num;
 }
 
+fn find_indexed_rating(numbers: &[&Vec<u8>], index: usize) -> u32 {
+    let mut rating = 0;
+    for number in numbers {
+        rating += number[index] as u32;
+    }
+    return rating;
+}
+
+fn filter_indexed_rating<'a>(
+    numbers: &[&'a Vec<u8>],
+    desired: u8,
+    index: usize,
+) -> Vec<&'a Vec<u8>> {
+    numbers
+        .into_iter()
+        .map(|x| *x) // I don't understand why this is neccesary. Why do we end up with &&Vec?
+        .filter(|x| x[index] == desired)
+        .collect()
+}
+
+fn filter_rating<'a>(mut numbers: Vec<&'a Vec<u8>>, lsr: LifeSupportRating) -> &'a Vec<u8> {
+    let mut idx = 0;
+    loop {
+        if numbers.len() == 1 {
+            return numbers.into_iter().next().unwrap();
+        }
+        let rating = find_indexed_rating(&numbers, idx);
+
+        numbers =
+            filter_indexed_rating(&numbers, lsr.get_desired_value(rating, numbers.len()), idx);
+        idx += 1;
+    }
+}
+
+enum LifeSupportRating {
+    Oxygen,
+    CO2,
+}
+
+impl LifeSupportRating {
+    fn get_desired_value(&self, meta: u32, count: usize) -> u8 {
+        match self {
+            &LifeSupportRating::Oxygen => {
+                if meta as f32 >= count as f32 / 2f32 {
+                    1
+                } else {
+                    0
+                }
+            }
+            &LifeSupportRating::CO2 => {
+                if (meta as f32) < count as f32 / 2f32 {
+                    1
+                } else {
+                    0
+                }
+            }
+        }
+    }
+}
+
+#[aoc(day3, part2)]
+fn part2(input: &[Vec<u8>]) -> i64 {
+    // let numbers: HashSet<Vec<u8>> = HashSet::from(input.iter());
+    let mut oxy_numbers = Vec::with_capacity(input.len());
+    for line in input.iter() {
+        oxy_numbers.push(line);
+    }
+    let co2_numbers = oxy_numbers.clone();
+
+    let oxy_val = filter_rating(oxy_numbers, LifeSupportRating::Oxygen);
+    let oxy_str: String = oxy_val.iter().map(|x| x.to_string()).collect();
+
+    let co2_val = filter_rating(co2_numbers, LifeSupportRating::CO2);
+    let co2_str: String = co2_val.iter().map(|x| x.to_string()).collect();
+
+    let oxy = i64::from_str_radix(&oxy_str, 2).unwrap();
+    let co2 = i64::from_str_radix(&co2_str, 2).unwrap();
+
+    return oxy * co2;
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -89,5 +170,11 @@ mod test {
     fn tests_part1() {
         let parsed = generator(INPUT_TEXT);
         assert_eq!(part1(&parsed), 198);
+    }
+
+    #[test]
+    fn tests_part2() {
+        let parsed = generator(INPUT_TEXT);
+        assert_eq!(part2(&parsed), 230)
     }
 }
