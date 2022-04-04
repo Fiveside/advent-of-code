@@ -12,7 +12,7 @@ fn parse_binary(input: &str) -> Vec<u8> {
 }
 
 #[aoc_generator(day3)]
-fn generator(input: &text) -> Vec<Vec<u8>> {
+fn generator(input: &str) -> Vec<Vec<u8>> {
     input
         .split("\n")
         .map(|s| s.trim())
@@ -21,9 +21,51 @@ fn generator(input: &text) -> Vec<Vec<u8>> {
         .collect()
 }
 
+fn gamma_from_meta(value: u64, thresh: usize) -> u8 {
+    if value as usize > thresh {
+        1
+    } else {
+        0
+    }
+}
+
+fn epsilon_from_meta(value: u64, thresh: usize) -> u8 {
+    if (value as usize) < thresh {
+        1
+    } else {
+        0
+    }
+}
+
 #[aoc(day3, part1)]
 fn part1(input: &[Vec<u8>]) -> i64 {
-    unimplemented!()
+    let numlines = input.len();
+    let buflen = input[0].len();
+    let mut buf: Vec<u64> = Vec::with_capacity(buflen);
+    for _ in 0..buflen {
+        buf.push(0);
+    }
+
+    for line in input {
+        for (idx, val) in line.iter().enumerate() {
+            buf[idx] += *val as u64;
+        }
+    }
+
+    // buf now contains the meta analysis
+    let gamma: String = buf
+        .iter()
+        .map(|x| gamma_from_meta(*x, numlines / 2).to_string())
+        .collect();
+    let epsilon: String = buf
+        .iter()
+        .map(|x| epsilon_from_meta(*x, numlines / 2).to_string())
+        .collect();
+
+    let g_num = i64::from_str_radix(&gamma, 2).unwrap();
+    let e_num = i64::from_str_radix(&epsilon, 2).unwrap();
+
+    return g_num * e_num;
 }
 
 #[cfg(test)]
@@ -45,6 +87,7 @@ mod test {
 
     #[test]
     fn tests_part1() {
-        assert_eq!(part1(INPUT_TEXT), 198);
+        let parsed = generator(INPUT_TEXT);
+        assert_eq!(part1(&parsed), 198);
     }
 }
