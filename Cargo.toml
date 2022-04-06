@@ -8,6 +8,7 @@ edition = "2021"
 bench = false
 
 [dependencies]
-aoc-runner = "*"
-aoc-runner-derive = "*"
-itertools = "*"
+aoc-runner = "0.3.0"
+aoc-runner-derive = "0.3.0"
+itertools = "0.10.3"
+regex = "1.5.5"
