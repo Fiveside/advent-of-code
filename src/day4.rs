@@ -2,7 +2,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 use regex::Regex;
 use std::collections::HashSet;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 struct BingoBoard {
     raw_board: Vec<Vec<u32>>,
     solutions: Vec<HashSet<u32>>,
@@ -143,6 +143,37 @@ fn part1(game: &BingoGame) -> u32 {
     }
 }
 
+#[aoc(day4, part2)]
+fn part2(game: &BingoGame) -> u32 {
+    let mut picked = HashSet::new();
+    let mut number_picker = game.drawings.iter().cloned();
+    let mut remaining_games = game.boards.clone();
+
+    // Prevent rust from complaining about uninitialized values.
+    // it is immediately overwritten in the loop
+    let mut last_number = 0;
+    let mut last_winners = Vec::new();
+
+    assert!(remaining_games.len() > 1);
+    while remaining_games.len() > 0 {
+        last_number = number_picker.next().unwrap();
+        picked.insert(last_number);
+
+        // This smells like it could be optimized.
+        last_winners = remaining_games
+            .iter()
+            .filter(|x| x.has_won(&picked))
+            .cloned()
+            .collect();
+        remaining_games = remaining_games
+            .into_iter()
+            .filter(|x| !x.has_won(&picked))
+            .collect();
+    }
+
+    return last_winners[0].partial_score(&picked) * last_number;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -172,5 +203,11 @@ mod tests {
     fn test_part1() {
         let processed = generator(INPUT_TEXT);
         assert_eq!(part1(&processed), 4512);
+    }
+
+    #[test]
+    fn test_part2() {
+        let processed = generator(INPUT_TEXT);
+        assert_eq!(part2(&processed), 1924);
     }
 }
