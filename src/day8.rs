@@ -1,4 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
+use std::collections::BTreeSet;
 
 #[derive(Debug)]
 struct Entry {
@@ -85,24 +86,78 @@ fn find_exactly_len(input: &Entry, len: usize) -> &str {
         .unwrap()
 }
 
-fn find_potential_len(input: &Entry, len: usize) -> Vec<&str> {
+fn find_potential_len_set(input: &Entry, len: usize) -> Vec<BTreeSet<char>> {
     input
         .patterns
         .iter()
-        .map(|x| x.as_str())
         .filter(|x| x.len() == len)
+        .map(|x| x.as_str().chars().collect())
         .collect()
 }
 
 fn derive_mapping(input: &Entry) -> Mapping {
     // Identify concrete number patterns
     let exactly_1 = find_exactly_len(input, 2);
+    let exactly_1_set: BTreeSet<char> = exactly_1.chars().collect();
     let exactly_7 = find_exactly_len(input, 3);
     let exactly_4 = find_exactly_len(input, 4);
+    let exactly_8_set: BTreeSet<char> = find_exactly_len(input, 7).chars().collect();
 
     // Identify 3.
-    let potential_235: Vec<&str> = find_potential_len(input, 5);
-    let potential_top_mid_bot = potential_235;
+    let potential_235 = find_potential_len_set(input, 5);
+    let potential_top_mid_bot = potential_235
+        .iter()
+        .cloned()
+        .reduce(|acc, r| acc.intersection(&r).cloned().collect())
+        .unwrap();
+
+    let exactly_3: String = potential_top_mid_bot
+        .iter()
+        .copied()
+        .chain(exactly_1.chars())
+        .collect();
+    let exactly_3_set: BTreeSet<char> = exactly_3.chars().collect();
+
+    // identify A
+    let exactly_a = exactly_7
+        .chars()
+        .collect::<BTreeSet<char>>()
+        .difference(&exactly_1_set)
+        .next()
+        .unwrap()
+        .to_owned();
+
+    let potential_069 = find_potential_len_set(input, 6);
+    let exactly_6_set = potential_069
+        .iter()
+        .filter(|e| !e.is_superset(&exactly_1_set))
+        .next()
+        .unwrap();
+
+    let exactly_c = exactly_1_set
+        .difference(exactly_6_set)
+        .next()
+        .unwrap()
+        .to_owned();
+
+    let exactly_f = exactly_1_set
+        .iter()
+        .filter(|&&x| x != exactly_c)
+        .next()
+        .unwrap()
+        .to_owned();
+
+    let exactly_5_set = potential_235
+        .iter()
+        .filter(|x| !x.contains(&exactly_c))
+        .next()
+        .unwrap();
+
+    let exactly_2_set = potential_235
+        .iter()
+        .filter(|&x| x != exactly_5_set && x != &exactly_3_set)
+        .next()
+        .unwrap();
 
     unimplemented!()
 }
