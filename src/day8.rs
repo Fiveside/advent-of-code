@@ -1,4 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
+use itertools::Itertools;
 use std::collections::BTreeSet;
 
 #[derive(Debug)]
@@ -59,21 +60,81 @@ fn part1(input: &[Entry]) -> i32 {
 
 // Compare 2, 3, 5. The one not containing C is 5.  The letter that 5 has that
 // 1 also has is F
-// The letter that 5 has that 2 does not is E.
+// The letter that 2 has that 5 does not is E.
 // The letter that 3 is missing besides E is B.
 
 // At this point we have identified A, B, C, E, and F.
 // Take 4, the letter 4 has that we have not identified yet is D.
 // Take 3.  The letter that 3 has that we have not identified is G.
 
+#[derive(Debug)]
 struct Mapping {
-    a: char,
-    b: char,
-    c: char,
-    d: char,
-    e: char,
-    f: char,
-    g: char,
+    zero: String,
+    one: String,
+    two: String,
+    three: String,
+    four: String,
+    five: String,
+    six: String,
+    seven: String,
+    eight: String,
+    nine: String,
+}
+
+impl Mapping {
+    fn new(a: char, b: char, c: char, d: char, e: char, f: char, g: char) -> Self {
+        let mut zero = [a, b, c, e, f, g];
+        let mut one = [c, f];
+        let mut two = [a, c, d, e, g];
+        let mut three = [a, c, d, f, g];
+        let mut four = [b, c, d, f];
+        let mut five = [a, b, d, f, g];
+        let mut six = [a, b, d, e, f, g];
+        let mut seven = [a, c, f];
+        let mut eight = [a, b, c, d, e, f, g];
+        let mut nine = [a, b, c, d, f, g];
+
+        zero.sort();
+        one.sort();
+        two.sort();
+        three.sort();
+        four.sort();
+        five.sort();
+        six.sort();
+        seven.sort();
+        eight.sort();
+        nine.sort();
+
+        Self {
+            zero: zero.into_iter().collect(),
+            one: one.into_iter().collect(),
+            two: two.into_iter().collect(),
+            three: three.into_iter().collect(),
+            four: four.into_iter().collect(),
+            five: five.into_iter().collect(),
+            six: six.into_iter().collect(),
+            seven: seven.into_iter().collect(),
+            eight: eight.into_iter().collect(),
+            nine: nine.into_iter().collect(),
+        }
+    }
+
+    fn translate(&self, input: &str) -> u64 {
+        let i_sorted: String = input.chars().sorted().collect();
+        match i_sorted {
+            _ if i_sorted == self.zero => 0,
+            _ if i_sorted == self.one => 1,
+            _ if i_sorted == self.two => 2,
+            _ if i_sorted == self.three => 3,
+            _ if i_sorted == self.four => 4,
+            _ if i_sorted == self.five => 5,
+            _ if i_sorted == self.six => 6,
+            _ if i_sorted == self.seven => 7,
+            _ if i_sorted == self.eight => 8,
+            _ if i_sorted == self.nine => 9,
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn find_exactly_len(input: &Entry, len: usize) -> &str {
@@ -159,12 +220,63 @@ fn derive_mapping(input: &Entry) -> Mapping {
         .next()
         .unwrap();
 
-    unimplemented!()
+    let exactly_e = exactly_2_set
+        .difference(exactly_5_set)
+        .copied()
+        .filter(|&c| if c == exactly_c { false } else { true })
+        .next()
+        .unwrap();
+
+    let exactly_b = exactly_8_set
+        .difference(&exactly_3_set)
+        .copied()
+        .filter(|&c| if c == exactly_e { false } else { true })
+        .next()
+        .unwrap();
+
+    let exactly_d = exactly_4
+        .chars()
+        .filter(|&c| match c {
+            _ if c == exactly_b => false,
+            _ if c == exactly_c => false,
+            _ if c == exactly_f => false,
+            _ => true,
+        })
+        .next()
+        .unwrap();
+
+    let exactly_g = exactly_3
+        .chars()
+        .filter(|&c| match c {
+            _ if c == exactly_a => false,
+            _ if c == exactly_c => false,
+            _ if c == exactly_d => false,
+            _ if c == exactly_f => false,
+            _ => true,
+        })
+        .next()
+        .unwrap();
+
+    Mapping::new(
+        exactly_a, exactly_b, exactly_c, exactly_d, exactly_e, exactly_f, exactly_g,
+    )
 }
 
 #[aoc(day8, part2)]
-fn part2(input: &[Entry]) -> i32 {
-    unimplemented!()
+fn part2(input: &[Entry]) -> u64 {
+    input
+        .iter()
+        .map(|entry| {
+            let mapping = derive_mapping(entry);
+            entry
+                .output
+                .iter()
+                .rev()
+                .enumerate()
+                .map(|(i, thing)| 10u64.pow(i as u32) * mapping.translate(thing))
+                .sum::<u64>()
+        })
+        .sum::<u64>()
 }
 
 #[cfg(test)]
@@ -191,8 +303,7 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        unimplemented!();
-        // let data = generator(INPUT_TEXT);
-        // assert_eq!(part2(&data), 168);
+        let data = generator(INPUT_TEXT);
+        assert_eq!(part2(&data), 61229);
     }
 }
