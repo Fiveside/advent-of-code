@@ -130,4 +130,10 @@ move 1 from 1 to 2
         let data = generator(INPUT_TEXT);
         assert_eq!(part1(&data), "CMZ");
     }
+
+    #[test]
+    fn test_part2() {
+        let data = generator(INPUT_TEXT);
+        assert_eq!(part2(&data), "MCD");
+    }
 }
