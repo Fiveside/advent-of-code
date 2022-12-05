@@ -2,17 +2,20 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day2)]
 fn generator(input: &str) -> Vec<(char, char)> {
-    input.lines().map(|line| {
-        let mut c = line.chars();
-        let left = c.next().unwrap();
-        let right = c.skip(1).next().unwrap();
-        (left, right)
-    }).collect()
+    input
+        .lines()
+        .map(|line| {
+            let mut c = line.chars();
+            let left = c.next().unwrap();
+            let right = c.skip(1).next().unwrap();
+            (left, right)
+        })
+        .collect()
 }
 
 #[aoc(day2, part1)]
 fn part1(input: &[(char, char)]) -> u32 {
-    input.iter().fold(0, |acc, &(opponent, me)|
+    input.iter().fold(0, |acc, &(opponent, me)| {
         acc + match (opponent, me) {
             // my_score + game_result
             ('A', 'X') => 1 + 3,
@@ -24,14 +27,14 @@ fn part1(input: &[(char, char)]) -> u32 {
             ('C', 'X') => 1 + 6,
             ('C', 'Y') => 2 + 0,
             ('C', 'Z') => 3 + 3,
-            _ => unreachable!()
+            _ => unreachable!(),
         }
-    )
+    })
 }
 
 #[aoc(day2, part2)]
 fn part2(input: &[(char, char)]) -> u32 {
-    input.iter().fold(0, |acc, &(opponent, me)|
+    input.iter().fold(0, |acc, &(opponent, me)| {
         acc + match (opponent, me) {
             // my_score + game_result
             ('A', 'X') => 3 + 0,
@@ -43,9 +46,9 @@ fn part2(input: &[(char, char)]) -> u32 {
             ('C', 'X') => 2 + 0,
             ('C', 'Y') => 3 + 3,
             ('C', 'Z') => 1 + 6,
-            _ => unreachable!()
+            _ => unreachable!(),
         }
-    )
+    })
 }
 
 #[cfg(test)]

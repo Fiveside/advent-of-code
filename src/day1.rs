@@ -55,7 +55,6 @@ fn part2(input: &[Elf]) -> u32 {
     return elves.iter().take(3).map(|x| x.caloric_total()).sum();
 }
 
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -87,5 +86,4 @@ mod test {
         let input = input_generation(INPUT_TEXT);
         assert_eq!(part2(&input), 45000);
     }
-
 }
