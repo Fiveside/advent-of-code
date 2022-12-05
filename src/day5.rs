@@ -107,7 +107,19 @@ fn part1(input: &Day5) -> String {
 
 #[aoc(day5, part2)]
 fn part2(input: &Day5) -> String {
-    unimplemented!()
+    let mut state = input.state.clone();
+    for operation in input.operations.iter() {
+        let mut buf = {
+            let from = &mut state[operation.from - 1];
+            let len = from.len();
+            let res = from[len - operation.count..].to_vec();
+            from.truncate(len - operation.count);
+            res
+        };
+        state[operation.to - 1].append(&mut buf);
+    }
+
+    state.into_iter().map(|mut v| v.pop().unwrap()).collect()
 }
 
 #[cfg(test)]
