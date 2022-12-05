@@ -1,17 +1,11 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 use itertools::Itertools;
 use regex::Regex;
-use std::iter;
 
 #[derive(Debug)]
 struct Day5 {
-    state: StackState,
+    state: Vec<Vec<char>>,
     operations: Vec<Operation>,
-}
-
-#[derive(Debug)]
-struct StackState {
-    stacks: Vec<Vec<char>>,
 }
 
 #[derive(Debug)]
@@ -21,7 +15,7 @@ struct Operation {
     count: usize,
 }
 
-fn parse_state(input: &str) -> StackState {
+fn parse_state(input: &str) -> Vec<Vec<char>> {
     // my god the string manip here sucks. I must be doing something wrong holy moly.
     //
     // The state definition is a big block that is wicked annoying to parse and
@@ -58,6 +52,7 @@ fn parse_state(input: &str) -> StackState {
         .into_iter()
         .map(|line| line.into_iter())
         .collect::<Vec<_>>();
+    its.reverse();
 
     let mut stack_string = Vec::new();
     for _ in 0..num_cols {
@@ -68,18 +63,14 @@ fn parse_state(input: &str) -> StackState {
         stack_string.push(string_buf.into_iter().join(""))
     }
 
-    println!("aaaaa {:?}", stack_string);
-
-    let stacks = stack_string
+    stack_string
         .into_iter()
         .map(|s| {
             s.chars()
                 .filter(|c| c.is_alphabetic())
                 .collect::<Vec<char>>()
         })
-        .collect::<Vec<_>>();
-
-    StackState { stacks }
+        .collect::<Vec<_>>()
 }
 
 fn parse_operations(input: &str) -> Vec<Operation> {
@@ -96,14 +87,22 @@ fn parse_operations(input: &str) -> Vec<Operation> {
 #[aoc_generator(day5)]
 fn generator(input: &str) -> Day5 {
     let (state_str, operations_str) = input.split_once("\n\n").unwrap();
-    let state: StackState = parse_state(state_str);
+    let state = parse_state(state_str);
     let operations: Vec<Operation> = parse_operations(operations_str);
     Day5 { state, operations }
 }
 
 #[aoc(day5, part1)]
 fn part1(input: &Day5) -> String {
-    unimplemented!()
+    let mut state = input.state.clone();
+    for operation in input.operations.iter() {
+        for _ in 0..(operation.count) {
+            let thing = state[operation.from - 1].pop().unwrap();
+            state[operation.to - 1].push(thing);
+        }
+    }
+
+    state.into_iter().map(|mut v| v.pop().unwrap()).collect()
 }
 
 #[aoc(day5, part2)]
@@ -128,7 +127,7 @@ move 1 from 1 to 2
 
     #[test]
     fn test_part1() {
-        let data = dbg!(generator(INPUT_TEXT));
+        let data = generator(INPUT_TEXT);
         assert_eq!(part1(&data), "CMZ");
     }
 }
