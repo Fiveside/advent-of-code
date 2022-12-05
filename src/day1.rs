@@ -1,7 +1,7 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-struct Elf {
+pub struct Elf {
     calories: Vec<u32>,
 }
 
@@ -28,7 +28,7 @@ impl Ord for Elf {
 }
 
 #[aoc_generator(day1)]
-fn input_generation(input: &str) -> Vec<Elf> {
+pub fn generator(input: &str) -> Vec<Elf> {
     input
         .split("\n\n")
         .map(|raw_lines| Elf {
@@ -42,13 +42,13 @@ fn input_generation(input: &str) -> Vec<Elf> {
 }
 
 #[aoc(day1, part1)]
-fn part1(input: &[Elf]) -> u32 {
+pub fn part1(input: &[Elf]) -> u32 {
     let elf = input.iter().max().unwrap();
     return elf.caloric_total();
 }
 
 #[aoc(day1, part2)]
-fn part2(input: &[Elf]) -> u32 {
+pub fn part2(input: &[Elf]) -> u32 {
     let mut elves = input.to_vec();
     elves.sort();
     elves.reverse();
@@ -77,13 +77,13 @@ mod test {
 
     #[test]
     fn test_part1() {
-        let input = input_generation(INPUT_TEXT);
+        let input = generator(INPUT_TEXT);
         assert_eq!(part1(&input), 24000);
     }
 
     #[test]
     fn test_part2() {
-        let input = input_generation(INPUT_TEXT);
+        let input = generator(INPUT_TEXT);
         assert_eq!(part2(&input), 45000);
     }
 }

@@ -1,7 +1,7 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day2)]
-fn generator(input: &str) -> Vec<(char, char)> {
+pub fn generator(input: &str) -> Vec<(char, char)> {
     input
         .lines()
         .map(|line| {
@@ -14,7 +14,7 @@ fn generator(input: &str) -> Vec<(char, char)> {
 }
 
 #[aoc(day2, part1)]
-fn part1(input: &[(char, char)]) -> u32 {
+pub fn part1(input: &[(char, char)]) -> u32 {
     input.iter().fold(0, |acc, &(opponent, me)| {
         acc + match (opponent, me) {
             // my_score + game_result
@@ -33,7 +33,7 @@ fn part1(input: &[(char, char)]) -> u32 {
 }
 
 #[aoc(day2, part2)]
-fn part2(input: &[(char, char)]) -> u32 {
+pub fn part2(input: &[(char, char)]) -> u32 {
     input.iter().fold(0, |acc, &(opponent, me)| {
         acc + match (opponent, me) {
             // my_score + game_result
