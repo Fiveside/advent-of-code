@@ -1,4 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
+use std::cmp;
 
 struct Assignment(u32, u32);
 
@@ -10,6 +11,10 @@ impl Assignment {
 
     fn fully_contains(&self, other: &Assignment) -> bool {
         self.0 <= other.0 && self.1 >= other.1
+    }
+
+    fn overlaps(&self, other: &Assignment) -> bool {
+        self.0 <= other.1 && other.0 <= self.1
     }
 }
 
@@ -36,7 +41,12 @@ fn part1(input: &[(Assignment, Assignment)]) -> u32 {
 
 #[aoc(day4, part2)]
 fn part2(input: &[(Assignment, Assignment)]) -> u32 {
-    unimplemented!()
+    input
+        .iter()
+        .filter(|&(l, r)| l.overlaps(r))
+        .count()
+        .try_into()
+        .unwrap()
 }
 
 #[cfg(test)]
@@ -55,5 +65,11 @@ mod test {
     fn test_part1() {
         let data = generator(INPUT_TEXT);
         assert_eq!(part1(&data), 2);
+    }
+
+    #[test]
+    fn test_part2() {
+        let data = generator(INPUT_TEXT);
+        assert_eq!(part2(&data), 4);
     }
 }
