@@ -156,6 +156,21 @@ fn part1(fs: &FileSystem) -> usize {
         .fold(0, |x, y| x + y)
 }
 
+#[aoc(day7, part2)]
+fn part2(fs: &FileSystem) -> usize {
+    let total_space = 70_000_000;
+    let used_space = fs.files.get(0).unwrap().get_size(fs);
+    let free_space = total_space - used_space;
+    let to_free = 30_000_000 - free_space;
+
+    let folders: Vec<_> = fs.files.iter().filter(|f| f.is_folder()).collect();
+    folders
+        .into_iter()
+        .map(|f| f.get_size(fs))
+        .filter(|&size| size >= to_free)
+        .fold(usize::MAX, std::cmp::min)
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -188,5 +203,11 @@ $ ls
     fn test_part1() {
         let data = generator(INPUT_TEXT);
         assert_eq!(part1(&data), 95437);
+    }
+
+    #[test]
+    fn test_part2() {
+        let data = generator(INPUT_TEXT);
+        assert_eq!(part2(&data), 24933642);
     }
 }
