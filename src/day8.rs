@@ -1,4 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
+use itertools::Itertools;
 use std::fmt::Debug;
 
 #[derive(Debug)]
@@ -33,6 +34,17 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         self.it
             .next()
+            .and_then(|x| self.view[x].get(self.colnum).map(|x| *x))
+    }
+}
+
+impl<'a, T> DoubleEndedIterator for ColumnView<'a, T>
+where
+    T: Copy + Debug,
+{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.it
+            .next_back()
             .and_then(|x| self.view[x].get(self.colnum).map(|x| *x))
     }
 }
@@ -93,9 +105,43 @@ fn part1(input: &[Vec<usize>]) -> usize {
     return visible_trees;
 }
 
+fn visibility_predicate(
+    mut it: impl Iterator<Item = usize>,
+    height: usize,
+    default: usize,
+) -> usize {
+    it.find_position(|&s| s >= height)
+        .map(|(pos, _val)| pos + 1)
+        .unwrap_or(default)
+}
+
+fn visibility_score(input: &[Vec<usize>], row: usize, col: usize) -> usize {
+    let height = input[row][col];
+    let left_slice = &input[row][0..col];
+    let left = visibility_predicate(left_slice.iter().copied().rev(), height, left_slice.len());
+
+    let right_slice = &input[row][col + 1..];
+    let right = visibility_predicate(right_slice.iter().copied(), height, right_slice.len());
+
+    let up_it = ColumnView::new(input, col, 0, row).rev();
+    let up = visibility_predicate(up_it, height, row);
+
+    let down_it = ColumnView::new(input, col, row + 1, input.len());
+    let down = visibility_predicate(down_it, height, input.len() - (row + 1));
+
+    left * right * up * down
+}
+
 #[aoc(day8, part2)]
-fn part2(input: &[Vec<usize>]) -> u32 {
-    unimplemented!()
+fn part2(input: &[Vec<usize>]) -> usize {
+    input
+        .iter()
+        .enumerate()
+        .flat_map(|(row_idx, row)| {
+            (0..row.len()).map(move |col_idx| visibility_score(input, row_idx, col_idx))
+        })
+        .max()
+        .unwrap()
 }
 
 #[cfg(test)]
