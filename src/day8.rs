@@ -93,6 +93,11 @@ fn part1(input: &[Vec<usize>]) -> usize {
     return visible_trees;
 }
 
+#[aoc(day8, part2)]
+fn part2(input: &[Vec<usize>]) -> u32 {
+    unimplemented!()
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -107,5 +112,11 @@ mod test {
     fn test_part1() {
         let data = generator(INPUT_TEXT);
         assert_eq!(part1(&data), 21)
+    }
+
+    #[test]
+    fn test_part2() {
+        let data = generator(INPUT_TEXT);
+        assert_eq!(part2(&data), 8);
     }
 }
