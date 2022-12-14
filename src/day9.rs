@@ -35,10 +35,6 @@ struct Position {
 }
 
 impl Position {
-    fn distance(&self, other: &Position) -> f64 {
-        (((self.x - other.x).pow(2) + (self.y - other.y).pow(2)) as f64).sqrt()
-    }
-
     fn move_direction(self, dir: &Direction) -> Self {
         match dir {
             Direction::Up => Position {
@@ -92,8 +88,6 @@ fn generator(input: &str) -> Vec<Instruction> {
 }
 
 fn new_tail(head: &Position, tail: &Position) -> Position {
-    let distance = head.distance(tail);
-
     let shouldmove = (head.x - tail.x).abs().max((head.y - tail.y).abs());
     if shouldmove <= 1 {
         // no adjustment needed.

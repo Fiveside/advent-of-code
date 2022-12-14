@@ -1,13 +1,90 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
+struct VirtualMachine<'a> {
+    x: i32,
+    cycle: u32,
+
+    interrupts: &'a [u32],
+}
+
+impl<'a> VirtualMachine<'a> {
+    fn new(interrupts: &'a [u32]) -> Self {
+        Self {
+            x: 1,
+            cycle: 0,
+            interrupts,
+        }
+    }
+
+    fn apply(&mut self, that: &Instruction) -> Option<i32> {
+        self.cycle += that.cycles();
+        let res = if let Some(x) = self.interrupts.first() {
+            if self.cycle >= *x {
+                self.interrupts = &self.interrupts[1..];
+                Some(self.x)
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+
+        // This is the only instruction that changes
+        // the actual machine state.
+        if let Instruction::Addx(x) = that {
+            self.x += *x;
+        }
+
+        res
+    }
+}
+
+enum Instruction {
+    Addx(i32),
+    Noop,
+}
+
+impl Instruction {
+    fn cycles(&self) -> u32 {
+        match self {
+            Self::Addx(_) => 2,
+            Self::Noop => 1,
+        }
+    }
+}
+
 #[aoc_generator(day10)]
-fn generator(input: &str) -> usize {
-    unimplemented!()
+fn generator(input: &str) -> Vec<Instruction> {
+    input
+        .lines()
+        .map(|line| {
+            let line = line.trim();
+            if line == "noop" {
+                return Instruction::Noop;
+            }
+            let val = line.rsplit_once(" ").unwrap().1.parse().unwrap();
+            return Instruction::Addx(val);
+        })
+        .collect()
 }
 
 #[aoc(day10, part1)]
-fn part1(input: &usize) -> usize {
-    unimplemented!()
+fn part1(input: &[Instruction]) -> i32 {
+    let interrupts = vec![20, 60, 100, 140, 180, 220];
+    let mut signals = Vec::with_capacity(interrupts.len());
+    let mut machine = VirtualMachine::new(&interrupts);
+
+    for instruction in input {
+        if let Some(x) = machine.apply(instruction) {
+            signals.push(x);
+        }
+    }
+
+    signals
+        .into_iter()
+        .zip(interrupts.into_iter())
+        .map(|(x, y)| x * (y as i32))
+        .sum()
 }
 
 #[cfg(test)]
