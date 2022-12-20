@@ -5,19 +5,37 @@ struct VirtualMachine<'a> {
     cycle: u32,
 
     interrupts: &'a [u32],
+    instructions: Vec<Instruction>,
+
+    // Number of cycles before applying the next instruction
+    next_cycles: u32,
+
+    // Next instrution to apply.
+    next: Instruction,
 }
 
 impl<'a> VirtualMachine<'a> {
-    fn new(interrupts: &'a [u32]) -> Self {
+    fn new(interrupts: &'a [u32], mut instructions: Vec<Instruction>) -> Self {
+        instructions.reverse();
+        let next = instructions.pop().unwrap();
         Self {
             x: 1,
             cycle: 0,
             interrupts,
+            instructions,
+
+            next_cycles: next.cycles(),
+            next,
         }
     }
 
-    fn apply(&mut self, that: &Instruction) -> Option<i32> {
-        self.cycle += that.cycles();
+    fn tick_part1(&mut self) -> Option<Option<i32>> {
+        let instruction = match self.instructions.pop() {
+            Some(x) => x,
+            None => return None,
+        };
+
+        self.cycle += instruction.cycles();
         let res = if let Some(x) = self.interrupts.first() {
             if self.cycle >= *x {
                 self.interrupts = &self.interrupts[1..];
@@ -31,14 +49,62 @@ impl<'a> VirtualMachine<'a> {
 
         // This is the only instruction that changes
         // the actual machine state.
-        if let Instruction::Addx(x) = that {
-            self.x += *x;
+        if let Instruction::Addx(x) = instruction {
+            self.x += x;
         }
 
-        res
+        Some(res)
+    }
+
+    fn generate_display(&mut self) -> [[bool; 40]; 6] {
+        let mut display = [
+            [false; 40],
+            [false; 40],
+            [false; 40],
+            [false; 40],
+            [false; 40],
+            [false; 40],
+        ];
+        let mut cursor: usize = 0;
+
+        'instruction: loop {
+            let cursor_in_range = (self.x - 1..=self.x + 1)
+                .into_iter()
+                .any(|x| x == (cursor % 40).try_into().unwrap());
+            if cursor_in_range {
+                display[cursor / 40][cursor % 40] = true;
+            }
+            cursor += 1;
+            self.cycle += 1;
+
+            if self.next_cycles == 0 {
+                match self.next {
+                    Instruction::Addx(next_x) => self.x += next_x,
+                    Instruction::Noop => {
+                        // nothing to do here.
+                    }
+                }
+                if cursor == 40 * 6 {
+                    break 'instruction;
+                }
+                match self.instructions.pop() {
+                    Some(instruction) => {
+                        self.next_cycles = instruction.cycles();
+                        self.next = instruction;
+                    }
+                    // No more instructions, bail.
+                    None => break 'instruction,
+                }
+            } else {
+                self.next_cycles -= 1;
+            }
+        }
+
+        return display;
     }
 }
 
+#[derive(Clone, Copy, Debug)]
 enum Instruction {
     Addx(i32),
     Noop,
@@ -47,8 +113,8 @@ enum Instruction {
 impl Instruction {
     fn cycles(&self) -> u32 {
         match self {
-            Self::Addx(_) => 2,
-            Self::Noop => 1,
+            Self::Addx(_) => 1,
+            Self::Noop => 0,
         }
     }
 }
@@ -68,23 +134,43 @@ fn generator(input: &str) -> Vec<Instruction> {
         .collect()
 }
 
+// part 1 is super broken
 #[aoc(day10, part1)]
 fn part1(input: &[Instruction]) -> i32 {
     let interrupts = vec![20, 60, 100, 140, 180, 220];
     let mut signals = Vec::with_capacity(interrupts.len());
-    let mut machine = VirtualMachine::new(&interrupts);
+    let mut machine = VirtualMachine::new(&interrupts, input.to_vec());
 
-    for instruction in input {
-        if let Some(x) = machine.apply(instruction) {
-            signals.push(x);
+    while let Some(x) = machine.tick_part1() {
+        if let Some(y) = x {
+            signals.push(y);
         }
     }
 
-    signals
+    return signals
         .into_iter()
         .zip(interrupts.into_iter())
         .map(|(x, y)| x * (y as i32))
-        .sum()
+        .sum();
+}
+
+#[aoc(day10, part2)]
+fn part2(input: &[Instruction]) -> String {
+    let mut machine = VirtualMachine::new(&[], input.to_vec());
+
+    let display = machine.generate_display();
+    let result = display
+        .into_iter()
+        .map(|row| {
+            row.into_iter()
+                .map(|x| if x { '🦾' } else { '🍙' })
+                .collect::<String>()
+        })
+        .collect::<Vec<String>>()
+        .join("\n");
+
+    println!("{}", result);
+    return result;
 }
 
 #[cfg(test)]
@@ -243,5 +329,11 @@ noop
     fn test_part1() {
         let data = generator(INPUT_TEXT);
         assert_eq!(part1(&data), 13140);
+    }
+
+    #[test]
+    fn test_part2() {
+        let data = generator(INPUT_TEXT);
+        assert_eq!(part2(&data), "🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙🦾🦾🍙🍙\n🦾🦾🦾🍙🍙🍙🦾🦾🦾🍙🍙🍙🦾🦾🦾🍙🍙🍙🦾🦾🦾🍙🍙🍙🦾🦾🦾🍙🍙🍙🦾🦾🦾🍙🍙🍙🦾🦾🦾🍙\n🦾🦾🦾🦾🍙🍙🍙🍙🦾🦾🦾🦾🍙🍙🍙🍙🦾🦾🦾🦾🍙🍙🍙🍙🦾🦾🦾🦾🍙🍙🍙🍙🦾🦾🦾🦾🍙🍙🍙🍙\n🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙\n🦾🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🍙🦾🦾🦾🦾\n🦾🦾🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙🍙🍙🦾🦾🦾🦾🦾🦾🦾🍙🍙🍙🍙🍙")
     }
 }
