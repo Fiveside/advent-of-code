@@ -2,6 +2,8 @@ import dataclasses
 import typing
 from pathlib import Path
 from os import path
+import types
+import importlib
 
 # Default input files locatin
 _DEFAULT_INPUT_FILES = Path(__file__).parent.joinpath("..", "..", "..", "input", "2022")
@@ -32,6 +34,12 @@ class Day:
     def generator(self, other):
         self._generator = other
 
+    def _run_generator(self, input):
+        data = self._generator(input)
+        if isinstance(data, types.GeneratorType):
+            data = list(data)
+        return data
+
     @property
     def has_part1(self):
         return self._part1 is not None
@@ -48,12 +56,12 @@ class Day:
 
     def run_part1(self):
         with open(self._input, "rt") as fobj:
-            prepped = self._generator(fobj.read())
+            prepped = self._run_generator(fobj.read())
         return self._part1(prepped)
 
     def run_part2(self):
         with open(self._input, "rt") as fobj:
-            prepped = self._generator(fobj.read())
+            prepped = self._run_generator(fobj.read())
         return self._part2(prepped)
 
     @property
@@ -72,11 +80,27 @@ class Day:
 
     def test_part1_successful(self):
         if self._test_part1 is not None:
-            return self._part1(self._test_input) == self._test_part1
+            return (
+                self._part1(self._run_generator(self._test_input)) == self._test_part1
+            )
 
     def test_part2_successful(self):
         if self._test_part2 is not None:
-            return self._part2(self._test_input) == self._test_part2
+            return (
+                self._part2(self._run_generator(self._test_input)) == self._test_part2
+            )
 
 
 year2022 = Year("2022")
+
+_submodules = [
+    f"day{x}"
+    for x in range(1, 24)
+    if Path(__file__).parent.joinpath(f"day{x}.py").exists()
+]
+for _mod in _submodules:
+    # Force import of each day to trigger day registration
+    importlib.import_module(f".{_mod}", __package__)
+
+
+__all__ = _submodules + [Day, Year, year2022]
