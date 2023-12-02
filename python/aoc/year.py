@@ -114,15 +114,3 @@ class Day:
             else:
                 disposition = disposition + "⚪️"
         return disposition
-
-    # def test_part1_successful(self):
-    #     if self._test_part1 is not None:
-    #         return (
-    #             self._part1(self._run_generator(self._test_input)) == self._test_part1
-    #         )
-
-    # def test_part2_successful(self):
-    #     if self._test_part2 is not None:
-    #         return (
-    #             self._part2(self._run_generator(self._test_input)) == self._test_part2
-    #         )

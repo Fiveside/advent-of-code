@@ -33,16 +33,30 @@ NUMBERS = {
     # "zero": "0",
 }
 
+REVERSED_NUMBERS = {k[::-1]: v for k, v in NUMBERS.items()}
 
-def numberize(line: str) -> str:
-    for string, digit in NUMBERS.items():
-        line = line.replace(string, digit)
-    return line
+
+def find_first_number(line, lookup):
+    window = 0
+    while window < len(line):
+        slice = line[window:]
+        if slice[0].isdigit():
+            return slice[0]
+        for x in range(3, 6):
+            if slice[0:x] in lookup:
+                return lookup[slice[0:x]]
+        window += 1
+
+
+def find_bookend_numbers(line: str):
+    first = find_first_number(line, NUMBERS)
+    last = find_first_number(line[::-1], REVERSED_NUMBERS)
+    return int(first + last)
 
 
 @day.part2
 def part2(input: list[str]) -> int:
-    return sum(line_to_num(numberize(x)) for x in input)
+    return sum(find_bookend_numbers(x) for x in input)
 
 
 @day.test(part1=142)
