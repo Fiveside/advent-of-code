@@ -1,6 +1,5 @@
 from . import year2023
 from dataclasses import dataclass
-import re
 from io import StringIO
 
 day = year2023.day(2)
