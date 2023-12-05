@@ -3,6 +3,7 @@ from io import StringIO
 import re
 from functools import reduce
 import operator
+import typing
 
 day = year2023.day(3)
 
@@ -19,20 +20,34 @@ def is_symbol(c: str) -> bool:
     return not c.isalnum() and c != "."
 
 
+class Point(typing.NamedTuple):
+    line: int
+    col: int
+
+
+class SurrogateKey(Point):
+    pass
+
+
+class PartNumber(typing.NamedTuple):
+    sk: SurrogateKey
+    value: int
+
+
 def tokenize(
     input: list[str],
-) -> tuple[dict[tuple[int, int], tuple[int, int]], set[tuple[int, int]]]:
+) -> tuple[dict[Point, PartNumber], set[Point]]:
     numbers = dict()
     symbols = set()
     for line_num, line in enumerate(input):
         for match in re.finditer(r"\d+", line):
             num = int(match.group())
-            sk = (line_num, match.start())
+            sk = SurrogateKey(line_num, match.start())
             for col_num in range(*match.span()):
-                numbers[(line_num, col_num)] = (sk, num)
+                numbers[Point(line_num, col_num)] = PartNumber(sk, num)
         for col_num, item in enumerate(line):
             if is_symbol(item):
-                symbols.add((line_num, col_num))
+                symbols.add(Point(line_num, col_num))
     return numbers, symbols
 
 
@@ -49,7 +64,9 @@ DELTAS = (
 )
 
 
-def adjacent_number_entries(x, y, db) -> list[tuple[int, int]]:
+def adjacent_number_entries(
+    x: int, y: int, db: dict[Point, PartNumber]
+) -> list[PartNumber]:
     for dx, dy in DELTAS:
         key = (x + dx, y + dy)
         if key in db:
