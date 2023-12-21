@@ -1,7 +1,7 @@
 from . import year2023
 from io import StringIO
 import re
-from dataclasses import dataclass, field, astuple
+from dataclasses import dataclass, field
 import itertools
 from functools import reduce
 
