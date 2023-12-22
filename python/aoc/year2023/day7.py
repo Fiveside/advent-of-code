@@ -33,6 +33,7 @@ def is_5oak(hand_meta: Counter, enable_jokers=False) -> bool:
     meta, jokers = without_jokers(hand_meta)
     if meta == dict():
         # This is an awful place to put this
+        # Handles the case where your hand is 'JJJJJ'
         # plz2refactor
         return True
     return meta.most_common(1)[0][1] + jokers == 5
@@ -103,18 +104,21 @@ def hand_type_comparator(l: str, r: str, enable_jokers=False) -> int:
         if lt or rt:
             if lt and rt:
                 # Hands the same, search by first card rank
-                return hand_rank_comparator(l, r)
+                return hand_rank_comparator(l, r, enable_jokers)
             else:
                 # Hands differ, one is superior
                 return -1 if lt else 1
     else:
         # Both are high card.
-        return hand_rank_comparator(l, r)
+        return hand_rank_comparator(l, r, enable_jokers)
 
 
-def hand_rank_comparator(l: str, r: str) -> int:
+def hand_rank_comparator(l: str, r: str, enable_jokers=False) -> int:
     # Victory order
-    order = "AKQJT98765432J"
+    if enable_jokers:
+        order = "AKQT98765432J"
+    else:
+        order = "AKQJT98765432"
     for lc, rc in zip(l, r):
         if lc == rc:
             continue
