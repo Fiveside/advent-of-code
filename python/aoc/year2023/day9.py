@@ -44,6 +44,12 @@ class Report:
             delta = ex[-1] + delta
         return self.values[-1] + delta
 
+    def predict_prev(self):
+        delta = 0
+        for ex in reversed(self.extrapolations):
+            delta = ex[0] - delta
+        return self.values[0] - delta
+
 
 @day.generator
 def generator(input: str) -> Generator[Report, None, None]:
@@ -56,7 +62,12 @@ def part1(reports: list[Report]) -> int:
     return sum(x.predict_next() for x in reports)
 
 
-@day.test(114)
+@day.part2
+def part2(reports: list[Report]) -> int:
+    return sum(x.predict_prev() for x in reports)
+
+
+@day.test(114, 2)
 def test():
     return """0 3 6 9 12 15
 1 3 6 10 15 21
