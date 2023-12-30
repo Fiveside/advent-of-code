@@ -64,14 +64,10 @@ def part1(net: Network) -> int:
 @dataclass
 class Journey:
     name: str
-    initial: int
     loop_length: int
 
-    current: int = field(init=False)
+    current: int = field(init=False, default=0)
     cycles: int = field(init=False, default=0)
-
-    def __post_init__(self):
-        self.current = self.initial
 
     def step(self):
         self.cycles += 1
@@ -90,12 +86,17 @@ def steps_to_z(node: Node, net: Network, ops: Iterator[Callable[[Node], str]]) -
 def part2(net: Network) -> int:
     nodes = [x for x in net.nodes.values() if x.name.endswith("A")]
 
+    # An analysis of the input data reveals the following:
+    # * Each start position is a member of the loop.  That is to say there is
+    #   no initial journey needed to be taken before we arrive at the loop
+    # * Many loops hit nodes multiple times before looping
+    # * Tests do not loop, but instead hit the void afterward
+
     journeys = []
     for node in nodes:
         ops = itertools.cycle(net.instructions_as_getters())
-        initial = steps_to_z(node, net, ops)
         loop_length = steps_to_z(node, net, ops)
-        journeys.append(Journey(node.name, initial, loop_length))
+        journeys.append(Journey(node.name, loop_length))
 
     # An analysis of the input data reveals that our assumptions about journey
     # are not quite true:  When z loops back, it always loops back to the
@@ -104,7 +105,7 @@ def part2(net: Network) -> int:
     return math.lcm(*(x.loop_length for x in journeys))
 
 
-@day.test(2)
+@day.test(2, 2)
 def test():
     return """RL
 
@@ -118,7 +119,7 @@ ZZZ = (ZZZ, ZZZ)
 """
 
 
-@day.test(6)
+@day.test(6, 6)
 def test2():
     return """LLR
 
@@ -128,7 +129,7 @@ ZZZ = (ZZZ, ZZZ)
 """
 
 
-@day.test()
+@day.test(part2=6)
 def test3():
     return """LR
 
