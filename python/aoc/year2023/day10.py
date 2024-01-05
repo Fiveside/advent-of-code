@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from collections.abc import Generator
 from typing import Self
-import pprint
 import math
+from collections import namedtuple
 
 day = year2023.day(10)
 
@@ -29,10 +29,22 @@ class Connection(Enum):
                 return Connection.west
 
 
+NOT_CORNERS = [
+    {Connection.north, Connection.south},
+    {Connection.east, Connection.west},
+]
+
+
 @dataclass
 class Square:
-    declared_connections: list[Connection]
+    declared_connections: set[Connection]
     connections: set[Self] = field(default_factory=set)
+
+    def is_corner(self) -> bool:
+        for not_corner in NOT_CORNERS:
+            if self.declared_connections == not_corner:
+                return False
+        return True
 
     def __hash__(self):
         return id(self)
@@ -44,22 +56,22 @@ class Grid:
     start: Square
 
 
-def char_to_connection(char: str) -> list[Connection]:
+def char_to_connection(char: str) -> set[Connection]:
     match char:
         case "|":
-            return [Connection.north, Connection.south]
+            return {Connection.north, Connection.south}
         case "-":
-            return [Connection.east, Connection.west]
+            return {Connection.east, Connection.west}
         case "F":
-            return [Connection.south, Connection.east]
+            return {Connection.south, Connection.east}
         case "7":
-            return [Connection.south, Connection.west]
+            return {Connection.south, Connection.west}
         case "J":
-            return [Connection.north, Connection.west]
+            return {Connection.north, Connection.west}
         case "L":
-            return [Connection.north, Connection.east]
+            return {Connection.north, Connection.east}
     assert char in "S.", f"Got unknown squre: {char}"
-    return []
+    return set()
 
 
 def parse_line(line: str) -> tuple[list[Square], Square | None]:
@@ -116,6 +128,10 @@ def generator(input: str) -> Grid:
                     if remote is start or dc.reverse in remote.declared_connections:
                         remote.connections.add(square)
                         square.connections.add(remote)
+                    # Start does not have properly declared connections, update declared
+                    # connections in start
+                    if remote is start:
+                        remote.declared_connections.add(dc.reverse)
 
     return Grid(grid=grid, start=start)
 
@@ -137,7 +153,42 @@ def part1(grid: Grid) -> int:
     return math.ceil(stepnum / 2)
 
 
-@day.test(4)
+Point = namedtuple("Point", ("x", "y"))
+
+
+@day.part2
+def part2(grid: Grid) -> int:
+    # The algorithm we're going to use here scans across each line
+    # looking for places where we enter and leave the object.
+    # Then we can simply just count squares inside the object
+
+    # First we need to trace the squares that make up the circumference
+    edges = {grid.start} | set(walk_grid(grid.start))
+
+    # Now go over each line and detect when we enter and leave the body
+    # of the shape.  The only connections we care about are those that are
+    # vertical.  We need two vertical components before we can flip
+    # between inside and outside.
+    vertical_conns = {Connection.north, Connection.south}
+    area = 0
+    for line in grid.grid:
+        north = False
+        south = False
+        for square in line:
+            if square in edges:
+                # Detect vertical connections
+                if Connection.north in square.declared_connections:
+                    north = not north
+                if Connection.south in square.declared_connections:
+                    south = not south
+                # verticals += len(vertical_conns & square.declared_connections)
+            elif north and south:
+                # we are inside
+                area += 1
+    return area
+
+
+@day.test(4, 1)
 def test():
     return """.....
 .S-7.
@@ -146,7 +197,7 @@ def test():
 ....."""
 
 
-@day.test(8)
+@day.test(8, 1)
 def test2():
     return """7-F7-
 .FJ|7
