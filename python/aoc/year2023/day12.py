@@ -64,12 +64,16 @@ def fit_row(groups: list[int], positions: str) -> Generator[list[int], None, Non
 
         # We have successfuly passed all the criteria at this point and fit the block
         if len(remaining_groups) == 0:
-            # If this is the last block we can fit, then yield success
-            yield [len(prefix)]
+            # If this is the last block we are trying to fit, then make sure we have
+            # no # in successive positions
+            if r"#" not in suffix:
+                yield True
+            # yield [len(prefix)]
         else:
             # If its not the last block, then recurse and adjust true offsets:
-            for success in fit_row(remaining_groups, suffix[1:]):
-                yield [len(prefix)] + [x + len(prefix) for x in success]
+            yield from fit_row(remaining_groups, suffix[1:])
+            # for success in fit_row(remaining_groups, suffix[1:]):
+            #     yield [len(prefix)] + [x + len(prefix) for x in success]
 
 
 @day.part1
