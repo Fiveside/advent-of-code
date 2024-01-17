@@ -4,13 +4,14 @@ from io import StringIO
 from typing import Generator
 import collections
 import itertools
+import functools
 
 day = year2023.day(12)
 
 
 @dataclass
 class Row:
-    groups: list[int]
+    groups: tuple[int]
     positions: str
 
 
@@ -18,7 +19,7 @@ class Row:
 def generator(input: str) -> Generator[Row, None, None]:
     for line in StringIO(input).readlines():
         positions, raw_groups = line.strip().split()
-        groups = [int(x) for x in raw_groups.split(",")]
+        groups = tuple(int(x) for x in raw_groups.split(","))
         yield Row(groups, positions)
 
 
@@ -39,8 +40,10 @@ def sliding_str_window_with_bookends(
         yield (prefix, "".join(window), suffix)
 
 
-def fit_row(groups: list[int], positions: str) -> Generator[list[int], None, None]:
+@functools.cache
+def fit_row(groups: list[int], positions: str) -> int:
     group, *remaining_groups = groups
+    total = 0
 
     for prefix, block, suffix in sliding_str_window_with_bookends(positions, group):
         # # If our block size isn't large enough to fit the group, that's because
@@ -67,25 +70,40 @@ def fit_row(groups: list[int], positions: str) -> Generator[list[int], None, Non
             # If this is the last block we are trying to fit, then make sure we have
             # no # in successive positions
             if r"#" not in suffix:
-                yield True
+                total += 1
             # yield [len(prefix)]
         else:
             # If its not the last block, then recurse and adjust true offsets:
-            yield from fit_row(remaining_groups, suffix[1:])
+            total += fit_row(tuple(remaining_groups), suffix[1:])
             # for success in fit_row(remaining_groups, suffix[1:]):
             #     yield [len(prefix)] + [x + len(prefix) for x in success]
+
+    return total
 
 
 @day.part1
 def part1(rows: list[Row]) -> int:
     total = 0
     for row in rows:
-        this_row = sum(1 for _ in fit_row(row.groups, row.positions))
+        this_row = fit_row(row.groups, row.positions)
         total += this_row
     return total
 
 
-@day.test(21)
+@day.part2
+def part2(rows: list[Row]) -> int:
+    total = 0
+    for row in rows:
+        groups = row.groups * 5
+        positions = "?".join(
+            (row.positions, row.positions, row.positions, row.positions, row.positions)
+        )
+        this_row = fit_row(groups, positions)
+        total += this_row
+    return total
+
+
+@day.test(21, 525152)
 def test():
     return """???.### 1,1,3
 .??..??...?##. 1,1,3
