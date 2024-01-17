@@ -46,11 +46,6 @@ def fit_row(groups: list[int], positions: str) -> int:
     total = 0
 
     for prefix, block, suffix in sliding_str_window_with_bookends(positions, group):
-        # # If our block size isn't large enough to fit the group, that's because
-        # # we've run out of string to fit our groups
-        # if len(block) < group:
-        #     break
-
         # The block is only usable if all elements are #? and if the element after
         # the block is .? or end of string
         if not all(x in r"#?" for x in block):
@@ -71,12 +66,9 @@ def fit_row(groups: list[int], positions: str) -> int:
             # no # in successive positions
             if r"#" not in suffix:
                 total += 1
-            # yield [len(prefix)]
         else:
             # If its not the last block, then recurse and adjust true offsets:
             total += fit_row(tuple(remaining_groups), suffix[1:])
-            # for success in fit_row(remaining_groups, suffix[1:]):
-            #     yield [len(prefix)] + [x + len(prefix) for x in success]
 
     return total
 
