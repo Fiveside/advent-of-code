@@ -169,7 +169,6 @@ def part2(grid: Grid) -> int:
     # of the shape.  The only connections we care about are those that are
     # vertical.  We need two vertical components before we can flip
     # between inside and outside.
-    vertical_conns = {Connection.north, Connection.south}
     area = 0
     for line in grid.grid:
         north = False

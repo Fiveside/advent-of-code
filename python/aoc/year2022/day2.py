@@ -1,7 +1,6 @@
 from . import year2022
 from dataclasses import dataclass
-from enum import Enum, auto
-import functools
+from enum import Enum
 
 print("Imported!")
 
