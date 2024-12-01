@@ -13,6 +13,9 @@ click = "^8.1.3"
 [tool.poetry.scripts]
 aoc = "aoc.cli:main"
 
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.21.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

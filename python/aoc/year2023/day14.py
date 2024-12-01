@@ -1,4 +1,4 @@
-from collections.abc import Generator
+from collections.abc import Generator, Sequence
 from . import year2023
 from .utils import split_by_blank_line, StrGrid2D
 from dataclasses import dataclass
@@ -8,7 +8,7 @@ from io import StringIO
 day = year2023.day(14)
 
 
-def tilt_str(s: str) -> str:
+def tilt_str(s: str | Sequence[str]) -> str:
     # The currently available index that tilting this string would
     # park a boulder in.
     buf = list("." * len(s))
@@ -30,10 +30,21 @@ def tilt_str(s: str) -> str:
 class Grid(StrGrid2D):
     pass
 
-    def tilt_left(self) -> Self:
+    def tilt_left(self) -> None:
         """Tilts the board to the left, gathering
         all boulders as far left as they can go."""
         self.grid = tuple(tilt_str(x) for x in self.grid)
+
+    def tilt_north(self) -> None:
+        rotated = tuple(tilt_str(x) for x in zip(*self.grid))
+        self.grid = tuple("".join(x) for x in zip(*rotated))
+
+    def tilt_south(self) -> None:
+        rotated = tuple(tilt_str(x[::-1]) for x in zip(*self.grid))
+        self.grid = tuple("".join(x) for x in zip(*rotated))[::-1]
+
+    def tilt_right(self) -> None:
+        self.grid = tuple(tilt_str(x[::-1])[::-1] for x in self.grid)
 
     def northern_load(self) -> int:
         load = 0
@@ -41,6 +52,9 @@ class Grid(StrGrid2D):
             line_load = sum(1 if x == "O" else 0 for x in line)
             load += line_load * multiplier
         return load
+
+    def clone(self) -> Self:
+        return Grid(self.grid)
 
 
 @day.generator
@@ -56,13 +70,42 @@ def generator(input: str) -> Generator[Grid, None, None]:
 
 @day.part1
 def part1(input: Grid) -> int:
-    input.rotate_counterclockwise()
-    input.tilt_left()
-    input.rotate_clockwise()
+    input.tilt_north()
     return input.northern_load()
 
 
-@day.test(136)
+def spin_cycle(grid: Grid) -> None:
+    grid.tilt_north()
+    grid.tilt_left()
+    grid.tilt_south()
+    grid.tilt_right()
+
+
+@day.part2
+def part2(grid: Grid) -> int:
+    spins = 1_000_000_000
+    cache = dict()
+    order = list()
+    for _ in range(spins):
+        spin_cycle(grid)
+        if grid.grid in cache:
+            break
+        else:
+            cache[grid.grid] = len(order)
+            order.append(grid.clone())
+    # Measure the spin loop length
+    # Calculate the number of spins until our goal
+    # Modulus into the spin loop to figure out which spin we'll land on
+    idx = cache[grid.grid]
+    loop = order[idx:]
+    remaining = spins - len(order)
+    g = loop[remaining % len(loop)]
+    return g.northern_load()
+
+    # return grid.northern_load()
+
+
+@day.test(136, 64)
 def test():
     return """O....#....
 O.OO#....#

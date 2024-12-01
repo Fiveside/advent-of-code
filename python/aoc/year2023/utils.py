@@ -46,11 +46,3 @@ class StrGrid2D:
     def rotate_counterclockwise(self) -> None:
         rotated = reversed(tuple("".join(x) for x in zip(*self.grid)))
         self.grid = tuple(rotated)
-
-    def reflect_across_identity(self) -> None:
-        """
-        Reflect values across the diagonal top left to bottom right.
-        Note that this assumes you have an odd number of rows/cols.
-        """
-        reflected = ("".join(x) for x in zip(*self.grid))
-        self.grid = tuple(reflected)
