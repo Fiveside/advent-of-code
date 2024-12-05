@@ -1,9 +1,8 @@
-from collections.abc import Callable
+from enum import Enum
 from io import StringIO
 import itertools
-import math
-import operator
 from typing import Generator
+
 from . import year2024
 
 day = year2024.day(2)
@@ -16,62 +15,62 @@ def generator(input: str) -> Generator[list[int], None, None]:
         yield parsed
 
 
-def is_increasing(row: list[int]) -> bool:
-    return all(x < y for x, y in itertools.pairwise(row))
+class PairDisposition(Enum):
+    DESCENDING = -1
+    ASCENDING = 1
+    INVALID = 0
+
+    @property
+    def is_valid(self):
+        return self != PairDisposition.INVALID
 
 
-def is_decreasing(row: list[int]) -> bool:
-    return all(x > y for x, y in itertools.pairwise(row))
-
-
-def is_safe_single_step(x: int, y: int) -> bool:
+def test_pair(x: int, y: int) -> PairDisposition:
     delta = abs(x - y)
-    return delta >= 1 and delta <= 3
+    if delta < 1 or delta > 3:
+        return PairDisposition.INVALID
+    if x > y:
+        return PairDisposition.DESCENDING
+    return PairDisposition.ASCENDING
 
 
-def is_safe_step(row: list[int]) -> bool:
-    return all(is_safe_single_step(x, y) for x, y in itertools.pairwise(row))
-
-
-def is_safe_report(row: list[int]) -> bool:
-    if not is_increasing(row) and not is_decreasing(row):
-        return False
-    return is_safe_step(row)
+def valid_part1_report(row: list[int]) -> bool:
+    dis = [test_pair(x, y) for x, y in itertools.pairwise(row)]
+    return all(x.is_valid for x in dis) and all(x == dis[0] for x in dis)
 
 
 @day.part1
 def part1(input: list[list[int]]) -> int:
-    return sum(1 if is_safe_report(x) else 0 for x in input)
+    return sum(1 if valid_part1_report(row) else 0 for row in input)
 
 
-def is_faulted_template(
-    compare: Callable[[int, int], bool], assertion: Callable[[list[int]], bool]
-) -> Callable[[list[int]], bool]:
-    def inner(row: list[int]) -> bool:
-        for idx, (x, y) in enumerate(itertools.pairwise(row)):
-            if compare(x, y):
-                return assertion(row[:idx] + row[idx + 1 :])
+def valid_part2_report(row: list[int]) -> bool:
+    # # Figure out if we're ascending or descending
+    # # Remember the case where every entry is invalid
+    # tests = (test_pair(x, y) for x, y in itertools.pairwise(row))
+    # direction = next((i for i in tests if i.is_valid), PairDisposition.INVALID)
+
+    # # If nothing is valid, just bail.  There's no saving this.
+    # if not direction.is_valid:
+    #     return False
+
+    # for idx, (x, y) in enumerate(itertools.pairwise(row)):
+    #     dis = test_pair(x, y)
+    #     if dis != direction:
+    #         # Try once again without that element
+
+    if valid_part1_report(row):
         return True
-
-    return inner
-
-
-is_faulted_increasing = is_faulted_template(operator.ge, is_increasing)
-is_faulted_decreasing = is_faulted_template(operator.le, is_decreasing)
-is_faulted_safe_step = is_faulted_template(
-    lambda x, y: not is_safe_single_step(x, y), is_safe_step
-)
-
-
-def is_faulted_safe_report(row: list[int]) -> bool:
-    if not is_faulted_increasing(row) and not is_faulted_decreasing(row):
-        return False
-    return is_faulted_safe_step(row)
+    for i in range(len(row)):
+        adjusted_row = row[:i] + row[i + 1 :]
+        if valid_part1_report(adjusted_row):
+            return True
+    return False
 
 
 @day.part2
 def part2(input: list[list[int]]) -> int:
-    return sum(1 if is_faulted_safe_report(x) else 0 for x in input)
+    return sum(1 if valid_part2_report(x) else 0 for x in input)
 
 
 @day.test(part1=2, part2=4)
