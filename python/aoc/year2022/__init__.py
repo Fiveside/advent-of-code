@@ -1,6 +1,6 @@
 from pathlib import Path
 import importlib
-from ..year import Year, Day
+from ..year import Year
 
 # Default input files locatin
 _DEFAULT_INPUT_FILES = Path(__file__).parent.joinpath("..", "..", "..", "input", "2022")

@@ -2,21 +2,10 @@ from . import year2023
 from dataclasses import dataclass
 from io import StringIO
 from typing import Generator
-import collections
-import itertools
 import functools
+from .utils import sliding_window
 
 day = year2023.day(9)
-
-
-def sliding_window(iterable, n):
-    "Collect data into overlapping fixed-length chunks or blocks."
-    # sliding_window('ABCDEFG', 4) --> ABCD BCDE CDEF DEFG
-    it = iter(iterable)
-    window = collections.deque(itertools.islice(it, n - 1), maxlen=n)
-    for x in it:
-        window.append(x)
-        yield tuple(window)
 
 
 def extrapolate(values: list[int]) -> list[int]:

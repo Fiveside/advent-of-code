@@ -1,5 +1,5 @@
 from . import year2023
-from dataclasses import dataclass, astuple
+from dataclasses import dataclass, astuple, field
 import abc
 from io import StringIO
 import re
@@ -19,6 +19,23 @@ class Part:
 
     def rating(self):
         return sum(astuple(self))
+
+
+class PartRatingRange:
+    # [start, end) so start inclusive end exclusive
+    start: int
+    end: int
+
+    @classmethod
+    def default(cls):
+        return cls(1, 4000)
+
+
+class PartHueristic:
+    x: PartRatingRange = field(init=False, default_factory=PartRatingRange.default)
+    m: PartRatingRange = field(init=False, default_factory=PartRatingRange.default)
+    a: PartRatingRange = field(init=False, default_factory=PartRatingRange.default)
+    s: PartRatingRange = field(init=False, default_factory=PartRatingRange.default)
 
 
 class RuleEvaluation(enum.Enum):
