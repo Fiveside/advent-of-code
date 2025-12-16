@@ -4,7 +4,6 @@ import abc
 from io import StringIO
 import re
 import operator
-import functools
 import enum
 from typing import Self
 
@@ -48,7 +47,7 @@ class Workflow:
             if disposition == RuleEvaluation.CONTINUE:
                 continue
             return disposition
-        assert False, f"exhausted all rules"
+        assert False, "exhausted all rules"
 
 
 class AcceptRule(Rule):
