@@ -5,9 +5,9 @@ def success(maybe_success):
 
 
 def main():
-    from .year2024 import year2024
+    from .year2025 import year2025
 
-    for dayname, day in year2024.days.items():
+    for dayname, day in year2025.days.items():
         print("")
         print(f"Day: {dayname}")
         if day.has_part1:
