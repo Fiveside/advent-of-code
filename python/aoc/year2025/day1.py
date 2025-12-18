@@ -46,18 +46,25 @@ class SafeDial:
         value = self.cursor + offset
         # Naieve implementation because my brain is cooked right now
         zeros = 0
-        while value > 100:
-            value -= 100
-            zeros += 1
-        while value < 0:
-            value += 100
-            zeros += 1
+        if value == 0:
+            zeros = 1
+        else:
+            # Hacky shit
+            if start == 0 and value < 0:
+                zeros -= 1
 
-        if value == 100:
-            value = 0
-            zeros += 1
-        elif value == 0:
-            zeros += 1
+            while value >= 100:
+                value -= 100
+                zeros += 1
+            while value < 0:
+                value += 100
+                zeros += 1
+
+        # if value == 100:
+        #     value = 0
+        #     zeros += 1
+        # if value == 0:
+        #     zeros += 1
 
         self.cursor = value
         return zeros
